@@ -1,0 +1,164 @@
+<!-- EuroPolytech | Simple Signature Generator -->
+<div id="siggen" style="max-width:700px;margin:auto;font-family:Arial, Helvetica, sans-serif;">
+  <style>
+    #siggen *{box-sizing:border-box}
+    .card{background:#fff;border:1px solid #e6e6e6;border-radius:14px;padding:18px;margin:14px 0}
+    label{font-size:13px;color:#333;display:block;margin:6px 0}
+    input{width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px}
+    textarea{width:100%;min-height:160px;padding:10px;font-family:monospace;font-size:13px;border:1px solid #ccc;border-radius:8px}
+    .btn{appearance:none;border:none;border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;margin-top:8px}
+    .btn-primary{background:#234FEB;color:#fff}
+    .btn-ghost{background:#f5f7ff;color:#234FEB}
+    .muted{color:#777;font-size:12px}
+    .preview-wrap{border:1px dashed #cfcfcf;border-radius:12px;padding:14px;background:#fcfcfc;overflow:auto}
+    h2{margin-top:0}
+  </style>
+
+  <h2>EuroPolytech Signature Generator</h2>
+  <div class="muted">Fill in your details and generate your official Outlook-safe signature.</div>
+
+  <div class="card">
+    <label>First Name</label>
+    <input id="first" placeholder="John">
+
+    <label>Last Name</label>
+    <input id="last" placeholder="Doe">
+
+    <label>Job Function</label>
+    <input id="job" placeholder="Lecturer in Business">
+
+    <label>Email Address</label>
+    <input id="email" placeholder="john.doe@europolytech.academy">
+
+    <label>Phone Number</label>
+    <input id="phone" placeholder="+351 920 447 663">
+
+    <button class="btn btn-primary" id="genBtn">Generate Signature</button>
+    <button class="btn btn-ghost" id="copyBtn">Copy HTML</button>
+    <span class="muted" id="copyNote"></span>
+  </div>
+
+  <div class="card">
+    <div><strong>Live Preview</strong></div>
+    <div class="preview-wrap" id="preview"></div>
+  </div>
+
+  <div class="card">
+    <div><strong>Signature HTML</strong></div>
+    <textarea id="output" readonly></textarea>
+    <div class="muted">Copy this and paste into Outlook signature settings.</div>
+  </div>
+
+  <script>
+    const BLUE = '#234FEB';
+    const YELLOW = '#F6C400';
+    const logo = "https://www.europolytech.academy/EuroPolytech%20Logo%20jpeg.png";
+    const siteUrl = "https://europolytech.academy";
+    const address = "R. Camilo Castelo Branco 79 RC, 4425-037 Maia, Portugal";
+    const socials = {
+      fb:"https://www.facebook.com/profile.php?id=61577115960891",
+      ln:"https://www.linkedin.com/company/europolytech-academy/",
+      yt:"https://www.youtube.com/channel/UCy3j4ju979gYXouWw9Qu2Rg",
+      ig:"https://www.instagram.com/euro.polytech?igsh=NHkwY2lueDdjdWs%3D"
+    };
+    const ICONS = {
+      fb:"https://cdn-icons-png.flaticon.com/512/733/733547.png",
+      ln:"https://cdn-icons-png.flaticon.com/512/174/174857.png",
+      yt:"https://cdn-icons-png.flaticon.com/512/1384/1384060.png",
+      ig:"https://cdn-icons-png.flaticon.com/512/174/174855.png"
+    };
+
+    function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+    function buildSignature(f,l,j,email,phone){
+      const fullname = esc(f + " " + l);
+      const job = esc(j);
+      const emailLink = esc(email);
+      const siteShort = siteUrl.replace(/^https?:\/\//,'').replace(/^www\./,'');
+
+      return `<!-- EuroPolytech | Staff Signature -->
+<div>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:520px; border-collapse:collapse; font-family:Arial, Helvetica, sans-serif; color:#333;">
+    <tbody>
+      <tr>
+        <!-- Logo -->
+        <td valign="top" style="width:110px; padding:0 12px 0 0;">
+          <a href="${siteUrl}" target="_blank"><img src="${logo}" alt="EuroPolytech Academy" style="display:block; width:110px; height:auto; border:0;"></a>
+        </td>
+
+        <!-- Name + Job -->
+        <td valign="top" style="padding:0 14px 0 0;">
+          <table style="border-collapse:collapse;">
+            <tr><td style="padding:0 0 6px;"><div style="font-size:14px; font-weight:bold; color:${BLUE};">${fullname}</div></td></tr>
+            <tr><td style="padding:0 0 6px;"><div style="font-size:11px; color:#666;">${job} – EuroPolytech Academy</div></td></tr>
+            <tr><td><div style="font-size:12px; white-space:nowrap;"><a href="${siteUrl}" style="color:#000; text-decoration:none; font-weight:bold;">${siteShort}</a></div></td></tr>
+          </table>
+        </td>
+
+        <!-- Divider -->
+        <td style="width:6px;">
+          <table style="width:6px;border-collapse:collapse;"><tr><td style="width:3px;background:${BLUE};"></td><td style="width:3px;background:${YELLOW};"></td></tr></table>
+        </td>
+        <td style="width:12px;">&nbsp;</td>
+
+        <!-- Contact -->
+        <td valign="top">
+          <table style="border-collapse:collapse;">
+            <tr><td><div style="font-size:12px;white-space:nowrap;"><span style="color:${BLUE};font-weight:bold;">E:</span>&nbsp;<a href="mailto:${emailLink}" style="color:#333;text-decoration:none;">${emailLink}</a></div></td></tr>
+            <tr><td><div style="font-size:12px;"><span style="color:${BLUE};font-weight:bold;">T:</span>&nbsp;${esc(phone)}</div></td></tr>
+            <tr><td><div style="font-size:12px;"><span style="color:${BLUE};font-weight:bold;">A:</span>&nbsp;${address}</div></td></tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Social -->
+      <tr><td colspan="5" style="padding:10px 0 0;">
+        <table style="border-collapse:collapse;"><tr>
+          ${socials.fb?`<td style="padding-right:10px;"><a href="${socials.fb}" target="_blank"><img src="${ICONS.fb}" width="22" height="22" style="border:0;"></a></td>`:''}
+          ${socials.ln?`<td style="padding-right:10px;"><a href="${socials.ln}" target="_blank"><img src="${ICONS.ln}" width="22" height="22" style="border:0;"></a></td>`:''}
+          ${socials.yt?`<td style="padding-right:10px;"><a href="${socials.yt}" target="_blank"><img src="${ICONS.yt}" width="22" height="22" style="border:0;"></a></td>`:''}
+          ${socials.ig?`<td><a href="${socials.ig}" target="_blank"><img src="${ICONS.ig}" width="22" height="22" style="border:0;"></a></td>`:''}
+        </tr></table>
+      </td></tr>
+
+      <!-- Divider -->
+      <tr><td colspan="5" style="padding:12px 0;">
+        <table style="width:100%;border-collapse:collapse;"><tr><td style="height:3px;background:${BLUE};"></td><td style="width:3px;background:${YELLOW};"></td></tr></table>
+      </td></tr>
+
+      <!-- Disclaimer -->
+      <tr><td colspan="5">
+        <div style="font-size:9px;line-height:13px;color:#777;text-align:justify;">
+          This email and any attachments are confidential and intended solely for the recipient.
+          If you are not the intended recipient, please notify the sender and delete this message immediately.
+          Any unauthorised use, disclosure, or copying is prohibited.
+        </div>
+      </td></tr>
+    </tbody>
+  </table>
+</div>`;
+    }
+
+    function generate(){
+      const f=document.getElementById('first').value.trim();
+      const l=document.getElementById('last').value.trim();
+      const j=document.getElementById('job').value.trim();
+      const e=document.getElementById('email').value.trim();
+      const p=document.getElementById('phone').value.trim();
+      const html=buildSignature(f,l,j,e,p);
+      document.getElementById('output').value=html;
+      document.getElementById('preview').innerHTML=html;
+    }
+
+    function copyHTML(){
+      const ta=document.getElementById('output');
+      ta.select();document.execCommand('copy');
+      document.getElementById('copyNote').textContent='Copied!';
+      setTimeout(()=>document.getElementById('copyNote').textContent='',2000);
+    }
+
+    document.getElementById('genBtn').addEventListener('click',generate);
+    document.getElementById('copyBtn').addEventListener('click',copyHTML);
+    generate();
+  </script>
+</div>
